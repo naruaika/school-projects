@@ -25,30 +25,30 @@
                 <div class="row mb-3">
                     <div class="col-lg col-md-6">
                         <label for="input-name" class="mb-2">
-                            Nama
+                            Nama Pemilik
                         </label>
-                        <input type="text" id="input-name" name="name" class="form-control" placeholder="Contoh: Agus Salim" value="<?php isset($kode_transaksi) ? (print(esc($customer['nama_pelanggan']) ?? '-')) : print(''); ?>" autocapitalize="words">
+                        <input type="text" id="input-name" name="name" class="form-control" placeholder="Contoh: Agus Salim" value="<?php isset($kode_transaksi) ? (print(esc($customer['nama_pelanggan']) ?: '-')) : print(''); ?>" autocapitalize="words">
                     </div>
 
                     <div class="col-lg col-md-6">
                         <label for="input-police-no" class="mb-2">
-                            Nomor Polisi
+                            Nomor Polisi <em>(wajib diisi)</em>
                         </label>
-                        <input type="text" id="input-police-no" name="police-no" class="form-control" placeholder="Contoh: A 1234 B" value="<?php isset($kode_transaksi) ? (print(esc($customer['no_polisi']) ?? '-')) : print(''); ?>" autocapitalize="characters" required>
+                        <input type="text" id="input-police-no" name="police-no" class="form-control" placeholder="Contoh: A 1234 B" value="<?php isset($kode_transaksi) ? (print(esc($customer['no_polisi']) ?: '-')) : print(''); ?>" autocapitalize="characters" required>
                     </div>
 
                     <div class="col-lg col-md-6">
                         <label for="input-chassis-no" class="mb-2">
                             Nomor Rangka
                         </label>
-                        <input type="text" id="input-chassis-no" name="chassis-no" class="form-control" placeholder="Contoh: A123456789BC" value = "<?php isset($kode_transaksi) ? (print(esc($customer['no_rangka']) ?? '-')) : print(''); ?>" autocapitalize="characters">
+                        <input type="text" id="input-chassis-no" name="chassis-no" class="form-control" placeholder="Contoh: A123456789BC" value = "<?php isset($kode_transaksi) ? (print(esc($customer['no_rangka']) ?: '-')) : print(''); ?>" autocapitalize="characters">
                     </div>
 
                     <div class="col-lg col-md-6">
                         <label for="input-machine-no" class="mb-2">
                             Nomor Mesin
                         </label>
-                        <input type="text" id="input-machine-no" name="machine-no" class="form-control" placeholder="Contoh: A123456789BC" value = "<?php isset($kode_transaksi) ? (print(esc($customer['no_mesin']) ?? '-')) : print(''); ?>" autocapitalize="characters">
+                        <input type="text" id="input-machine-no" name="machine-no" class="form-control" placeholder="Contoh: A123456789BC" value = "<?php isset($kode_transaksi) ? (print(esc($customer['no_mesin']) ?: '-')) : print(''); ?>" autocapitalize="characters">
                     </div>
                 </div>
 
@@ -57,7 +57,7 @@
                         <label for="input-address" class="mb-2">
                             Alamat
                         </label>
-                        <input type="text" id="input-address" name="address" class="form-control" value = "<?php isset($kode_transaksi) ? (print(esc($customer['alamat']) ?? '-')) : print(''); ?>" placeholder="Contoh: Jalan Soekarno No. 123">
+                        <input type="text" id="input-address" name="address" class="form-control" value = "<?php isset($kode_transaksi) ? (print(esc($customer['alamat']) ?: '-')) : print(''); ?>" placeholder="Contoh: Jalan Soekarno No. 123">
                         <!-- <textarea rows="2" id="input-address" class="form-control"></textarea> -->
                     </div>
 
@@ -65,7 +65,7 @@
                         <label for="input-contact" class="mb-2">
                             Kontak
                         </label>
-                        <input type="tel|email" id="input-contact" name="contact" class="form-control" value = "<?php isset($kode_transaksi) ? (print(esc($customer['kontak']) ?? '-')) : print(''); ?>" placeholder="Contoh: 081234567890">
+                        <input type="tel|email" id="input-contact" name="contact" class="form-control" value = "<?php isset($kode_transaksi) ? (print(esc($customer['kontak']) ?: '-')) : print(''); ?>" placeholder="Contoh: 081234567890">
                     </div>
 
                     <div class="col-lg col-md-6">
@@ -86,15 +86,13 @@
                 <div class="row mb-3">
                     <div class="col-lg-6 col-md-6">
                         <label for="input-timestamp-end" class="mb-2">
-                            Keluhan
+                            Keluhan <em>(wajib diisi)</em>
                         </label>
-                        <textarea id="input-complaint" class="form-control" rows="3" placeholder="Contoh: Servis rutin setelah dibawa pergi ke luar kota." autocapitalized="sentences" required><?php isset($kode_transaksi) ? (print(esc($customer['keluhan']) ?? '-')) : print(''); ?></textarea>
+                        <textarea id="input-complaint" name="complaint" class="form-control" rows="3" placeholder="Contoh: Servis rutin setelah dibawa pergi ke luar kota." autocapitalized="sentences" required><?php isset($kode_transaksi) ? (print(esc($customer['keluhan']) ?: '-')) : print(''); ?></textarea>
                     </div>
                 </div>
 
                 <?php if (!isset($kode_transaksi)) : ?>
-                    <hr>
-
                     <button class="btn btn-success me-2 mb-2" type="submit">
                         <span data-feather="save"></span>
                         Simpan
@@ -121,9 +119,12 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Deskripsi Servis</th>
+                                    <th>Mekanik</th>
                                     <th style="text-align: right;">Ongkos (Rp)</th>
-                                    <th style="text-align: center;">Mekanik</th>
-                                    <th style="width: 50px; text-align: right;"></th>
+
+                                    <?php if ($status == 'sedang') : ?>
+                                        <th style="width: 50px;"></th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
 
@@ -131,12 +132,12 @@
                                 <?php $no = 1;
                                 $totalRepair = 0;
                                 foreach ($serviceItems as $row) :
-                                    $totalRepair += $row['biaya']; ?>
+                                    $totalRepair += $row['ongkos']; ?>
                                     <tr>
                                         <th><?= esc($no++); ?></th>
-                                        <td><?= esc($row['nama_jasa']); ?></td>
-                                        <td style="text-align: right;"><?= esc($row['biaya']); ?></td>
-                                        <td style="text-align: center;"><?= esc($row['nama_mekanik']); ?></td>
+                                        <td><?= esc($row['deskripsi_jasa']); ?></td>
+                                        <td><?= esc($row['nama_mekanik']); ?></td>
+                                        <td style="text-align: right;"><?= number_format(esc($row['ongkos']), 0, ',', '.'); ?></td>
 
                                         <?php if ($status == 'sedang') : ?>
                                             <td>
@@ -151,8 +152,8 @@
 
                             <tfoot>
                                 <tr class="table-success">
-                                    <th colspan="3" style="font-size: 1.2em;">Harga Total</th>
-                                    <td colspan="2" style='text-align: right; font-weight: bold; font-size: 1.2em;'>Rp<?= number_format($total, 0, ',', '.'); ?></td>
+                                    <th colspan="2">Harga Total</th>
+                                    <td colspan="2" style='text-align: right; font-weight: bold;'>Rp<?= number_format($totalRepair, 0, ',', '.'); ?></td>
 
                                     <?php if ($status == 'sedang') : ?>
                                         <td></td>
@@ -164,7 +165,7 @@
 
                     <?php if ($status == 'sedang') : ?>
                         <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                            <strong>Peringatan:</strong> Barang yang sudah dibeli tidak dapat dikembalikan. Mohon pastikan barang tidak memiliki cacat sebelum diserahkan kepada pembeli!
+                            <strong>Peringatan:</strong> Mohon pastikan servis benar-benar telah selesai dilaksanakan sebelum mengubah status!
                         </div>
                     <?php endif; ?>
                 <?php else :
@@ -179,7 +180,7 @@
                         Cari Jasa Servis
                     </h5>
                     <div class="mb-3">
-                        <input type="search" id="input-query-service" class="form-control" placeholder="Tikkan nama atau jenis jasa servis ..." onkeyup="searchParts()" autofocus>
+                        <input type="search" id="input-query-services" class="form-control" placeholder="Tikkan nama atau jenis jasa servis ..." onkeyup="searchServices()" autofocus>
                     </div>
 
                     <div class="table-responsive">
@@ -187,14 +188,14 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Deskripsi Servis</th>
-                                    <th style="text-align: right;">Ongkos (Rp)</th>
-                                    <th style="text-align: center;">Mekanik</th>
+                                    <th>Deskripsi Jasa</th>
+                                    <th style="width: 100px;">Ongkos (Rp)</th>
+                                    <th style="text-align: center; width: 120px;">Mekanik</th>
                                     <th style="width: 50px; text-align: right;"></th>
                                 </tr>
                             </thead>
 
-                            <tbody id="search-result-service">
+                            <tbody id="search-result-services">
                                 <tr>
                                     <th>...</th>
                                     <th>...</th>
@@ -401,7 +402,7 @@
             Batal
         </button>
 
-        <button class="btn btn-success me-2 mb-2" onclick="location.href='<?= base_url('repair/confirm/' . $kode_transaksi) ?>'">
+        <button class="btn btn-success me-2 mb-2" onclick="releaseRepaired()">
             <span data-feather="dollar-sign"></span>
             Selesai
         </button>
@@ -427,6 +428,58 @@
             document.getElementById('input-complaint').readOnly = true;
         }
 
+        function searchServices() {
+            const query = document.getElementById('input-query-services').value;
+            if (query.length >= 3) {
+                let xhttp = new XMLHttpRequest();
+                xhttp.open('GET', "<?= base_url('service/search?query=') ?>" + query, true);
+                xhttp.onload = function() {
+                    if (this.response && this.status === 200) {
+                        let line = '';
+                        JSON.parse(this.response).services.forEach(row => {
+                            line += '<tr>';
+                            line += '<th>' + row.kode_jasa + '</th>';
+                            line += '<td>' + row.deskripsi_jasa + '</td>';
+                            line += '<td><input id="input-price-' + row.kode_jasa + '" type="number" name="qty" class="form-control form-control-sm w-100" value="' + row.ongkos_min + '" min="' + row.ongkos_min + '" onclick="this.select();"></td>';
+                            line += '<td>';
+                            line += '<select class="form-select form-select-sm" id="input-mechanic-' + row.kode_jasa + '" required>';
+                            line += '<option selected disabled>Pilih ...</option>';
+
+                            JSON.parse(this.response).mechanics.forEach(mechanic => {
+                                line += '<option value="' + mechanic.kode_mekanik + '">' + mechanic.nama_mekanik + '</option>';
+                            });
+
+                            line += '</select>';
+                            line += '</td>';
+                            line += '<td><button class="btn btn-outline-primary btn-sm" onclick="addService(' + row.kode_jasa + ')"><span data-feather="plus"></span></button></td>';
+                            line += '</tr>';
+                        });
+                        document.getElementById('search-result-services').innerHTML = line;
+                        feather.replace();
+                    } else {
+                        document.getElementById('search-result-services').innerHTML = "<tr><td>...</td><td>...</td><td style='text-align: right;'>...</td><td style='text-align: center;'>...</td><td style='text-align: right;'>...</td></tr>";
+                    }
+                }
+                xhttp.send();
+            }
+        }
+
+        function addService(serviceId) {
+            const mechanicId = document.getElementById('input-mechanic-' + serviceId).value;
+            const price = document.getElementById('input-price-' + serviceId).value;
+            if (mechanicId) {
+                let xhttp = new XMLHttpRequest();
+                xhttp.open('POST', "<?= base_url('repair/add/' . $kode_transaksi) ?>", true);
+                xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhttp.onreadystatechange = function() {
+                    if (this.response && this.status === 200) {
+                        location.reload(true);
+                    }
+                }
+                xhttp.send('serviceId=' + serviceId + '&mechanicId=' + mechanicId + '&price=' + price);
+            }
+        }
+
         function searchParts() {
             const query = document.getElementById('input-query-parts').value;
             if (query.length >= 3) {
@@ -446,9 +499,9 @@
                             line += '<td>';
                             line += '<div class="input-group">';
 
-                            line += '<button class="btn btn-outline-primary btn-sm" onclick="addCartItem(' + row.kode_suku_cadang + ')"><span data-feather="arrow-left"></span></button>';
-
                             line += '<input id="input-qty-' + row.kode_suku_cadang + '" type="number" name="qty" class="form-control form-control-sm" value="0" min="0" max="' + row.stok + '">';
+
+                            line += '<button class="btn btn-outline-primary btn-sm" onclick="addCartItem(' + row.kode_suku_cadang + ')"><span data-feather="plus"></span></button>';
 
                             line += '</div>';
                             line += '</td>';
@@ -468,15 +521,26 @@
             const qty = document.getElementById('input-qty-' + partId).value;
             if (qty > 0) {
                 let xhttp = new XMLHttpRequest();
-                xhttp.open('POST', "<?= base_url('sale/add-item/' . $kode_transaksi) ?>", true);
+                xhttp.open('POST', "<?= base_url('sale/add/' . $kode_transaksi) ?>", true);
                 xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhttp.onreadystatechange = function() {
                     if (this.response && this.status === 200) {
                         location.reload(true);
                     }
                 }
-                xhttp.send('partId=' + partId + '&qty=' + qty + '&price=' + qty);
+                xhttp.send('partId=' + partId + '&qty=' + qty);
             }
+        }
+
+        function releaseRepaired() {
+            let xhttp = new XMLHttpRequest();
+            xhttp.open('GET', "<?= base_url('repair/confirm/' . $kode_transaksi) ?>", true);
+            xhttp.onload = function() {
+                if (this.response && this.status === 200) {
+                    location.reload(true);
+                }
+            }
+            xhttp.send();
         }
 
         function countChange() {

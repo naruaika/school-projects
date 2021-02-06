@@ -42,9 +42,12 @@ $routes->post('/sale/add/(:segment)', 'Sales::update/$1');
 
 $routes->get('/repair', 'Repair::index');
 $routes->get('/repair/(:segment)', 'Repair::view/$1');
+$routes->get('/repair/confirm/(:segment)', 'Repair::commit/$1');
 $routes->post('/repair/register', 'Repair::init');
+$routes->post('/repair/add/(:segment)', 'Repair::update/$1');
 
 $routes->get('/sparepart/search', 'SpareParts::search');
+$routes->get('/service/search', 'RepairServices::search');
 
 /*
  * --------------------------------------------------------------------

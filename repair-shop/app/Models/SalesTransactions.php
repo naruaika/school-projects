@@ -11,8 +11,7 @@ class SalesTransactions extends Model
     public function getItems(int $transactionId,
                              int $sparePartId = null)
     {
-        $this->select('transaksi_suku_cadang.*,
-                       nomor_suku_cadang,
+        $this->select('nomor_suku_cadang,
                        nama_suku_cadang,
                        het,
                        qty,

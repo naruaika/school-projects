@@ -25,22 +25,23 @@ class Customers extends Model
                     ->get()->getRowArray();
     }
 
-    public function addCustomer(string $customerName = null,
+    public function addCustomer(string $customerName,
                                 string $policeNumber,
-                                string $chassisNumber = null,
-                                string $machineNumber = null,
-                                string $contact = null,
-                                string $address = null,
+                                string $chassisNumber,
+                                string $machineNumber,
+                                string $contact,
+                                string $address,
                                 string $complaint)
     {
+        // FIXME: escape the parameters
         $data = [
-            'nama_pelanggan' => $this->escapeString($customerName),
-            'no_polisi' => $this->escapeString($policeNumber),
-            'no_rangka' => $this->escapeString($machineNumber),
-            'no_mesin' => $this->escapeString($machineNumber),
-            'kontak' => $this->escapeString($contact),
-            'alamat' => $this->escapeString($address),
-            'keluhan' => $this->escapeString($complaint),
+            'nama_pelanggan' => $customerName,
+            'no_polisi' => $policeNumber,
+            'no_rangka' => $machineNumber,
+            'no_mesin' => $machineNumber,
+            'kontak' => $contact,
+            'alamat' => $address,
+            'keluhan' => $complaint,
         ];
         $this->insert($data);
 

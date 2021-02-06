@@ -38,25 +38,67 @@ class Transactions extends Model
             return $this->findAll();
         }
 
-        // TODO: return total cost
-        return $this->select('kode_transaksi,
-                              no_polisi,
-                              nama_pelanggan,
-                              kontak,
-                              alamat,
-                              no_rangka,
-                              no_mesin,
-                              tgl_masuk,
-                              tgl_keluar,
-                              status')
-                    ->from('pelanggan, pengguna')
-                    ->where('status', $this->escapeString($status))
-                    ->where('transaksi.kode_pelanggan = pelanggan.kode_pelanggan')
-                    ->where('transaksi.kode_kasir = pengguna.kode_pengguna')
-                    ->where('transaksi.kode_pelanggan <> 1')
-                    ->where('no_pegawai', $this->escapeString($employeeId))
-                    ->orderBy('kode_transaksi DESC')
-                    ->get()->getResultArray();
+        return $this->query("
+            SELECT
+                C.kode_transaksi,
+                tgl_masuk,
+                tgl_keluar,
+                status,
+                no_polisi,
+                keluhan,
+                (harga_total_suku_cadang + harga_total_jasa) AS harga_total
+            FROM (
+                SELECT
+                    A.*,
+                    harga_total_suku_cadang
+                FROM (
+                    SELECT
+                        transaksi.kode_transaksi,
+                        tgl_masuk,
+                        tgl_keluar,
+                        status,
+                        no_polisi,
+                        keluhan
+                    FROM
+                        transaksi,
+                        pengguna,
+                        pelanggan
+                    WHERE (
+                            status = ? OR
+                            tgl_keluar >= ?) AND
+                        transaksi.kode_pelanggan <> 1 AND
+                        transaksi.kode_pelanggan = pelanggan.kode_pelanggan AND
+                        transaksi.kode_kasir = pengguna.kode_pengguna AND
+                        no_pegawai = ?) AS A
+                LEFT JOIN (
+                    SELECT
+                        transaksi.kode_transaksi,
+                        SUM(harga_total) AS harga_total_suku_cadang
+                    FROM
+                        transaksi,
+                        transaksi_suku_cadang,
+                        suku_cadang
+                    WHERE
+                        transaksi.kode_transaksi = transaksi_suku_cadang.kode_transaksi AND
+                        transaksi_suku_cadang.kode_suku_cadang = suku_cadang.kode_suku_cadang
+                    GROUP BY
+                        transaksi.kode_transaksi) AS B
+                ON
+                    A.kode_transaksi = B.kode_transaksi) AS C
+            LEFT JOIN (
+                SELECT
+                    transaksi.kode_transaksi,
+                    SUM(ongkos) AS harga_total_jasa
+                FROM
+                    transaksi,
+                    transaksi_jasa
+                WHERE
+                    transaksi.kode_transaksi = transaksi_jasa.kode_transaksi
+                GROUP BY
+                    transaksi.kode_transaksi) AS D
+            ON C.kode_transaksi = D.kode_transaksi;
+            ", [$status, date('Y-m-d'), $employeeId]
+        )->getResultArray();
 
 
     }
@@ -74,27 +116,40 @@ class Transactions extends Model
 
         return $this->query("
             SELECT
-                transaksi.kode_transaksi,
-                tgl_masuk,
-                tgl_keluar,
-                status,
-                SUM(harga_total) AS harga_total,
-                GROUP_CONCAT(nama_suku_cadang SEPARATOR ', ') AS daftar_suku_cadang
-            FROM
-                transaksi,
-                pengguna,
-                transaksi_suku_cadang,
-                suku_cadang
-            WHERE (
-                    status = ? OR
-                    tgl_keluar >= ?) AND
-                transaksi.kode_pelanggan = 1 AND
-                transaksi.kode_transaksi = transaksi_suku_cadang.kode_transaksi AND
-                transaksi.kode_kasir = pengguna.kode_pengguna AND
-                transaksi_suku_cadang.kode_suku_cadang = suku_cadang.kode_suku_cadang AND
-                no_pegawai = ?
-            GROUP BY
-                transaksi.kode_transaksi;
+                A.*,
+                B.harga_total,
+                B.daftar_suku_cadang
+            FROM (
+                SELECT
+                    transaksi.kode_transaksi,
+                    tgl_masuk,
+                    tgl_keluar,
+                    status
+                FROM
+                    transaksi,
+                    pengguna
+                WHERE (
+                        status = ? OR
+                        tgl_keluar >= ?) AND
+                    transaksi.kode_pelanggan = 1 AND
+                    transaksi.kode_kasir = pengguna.kode_pengguna AND
+                    no_pegawai = ?) AS A
+            LEFT JOIN (
+                SELECT
+                    transaksi.kode_transaksi,
+                    SUM(harga_total) AS harga_total,
+                    GROUP_CONCAT(nama_suku_cadang SEPARATOR ', ') AS daftar_suku_cadang
+                FROM
+                    transaksi,
+                    transaksi_suku_cadang,
+                    suku_cadang
+                WHERE
+                    transaksi.kode_transaksi = transaksi_suku_cadang.kode_transaksi AND
+                    transaksi_suku_cadang.kode_suku_cadang = suku_cadang.kode_suku_cadang
+                GROUP BY
+                    transaksi.kode_transaksi) AS B
+            ON
+                A.kode_transaksi = B.kode_transaksi;
             ", [$status, date('Y-m-d'), $employeeId]
         )->getResultArray();
     }

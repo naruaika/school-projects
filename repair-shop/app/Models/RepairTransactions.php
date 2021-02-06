@@ -6,45 +6,44 @@ class RepairTransactions extends Model
 {
     protected $table = 'transaksi_jasa';
 
-    protected $allowedFields = ['qty', 'harga_total'];
+    protected $allowedFields = ['kode_transaksi', 'kode_jasa', 'kode_mekanik', 'ongkos'];
 
-    // public function getItems(int $transactionId,
-    //                          int $sparePartId = null)
-    // {
-    //     $this->select('transaksi_suku_cadang.*,
-    //                    nomor_suku_cadang,
-    //                    nama_suku_cadang,
-    //                    het,
-    //                    qty,
-    //                    harga_total')
-    //          ->from('suku_cadang')
-    //          ->where('transaksi_suku_cadang.kode_suku_cadang = suku_cadang.kode_suku_cadang')
-    //          ->where('kode_transaksi', $transactionId);
+    public function getItems(int $transactionId,
+                             int $serviceId = null)
+    {
+        $this->select('deskripsi_jasa,
+                       ongkos,
+                       nama_mekanik')
+             ->from('jasa, mekanik')
+             ->where('transaksi_jasa.kode_jasa = jasa.kode_jasa')
+             ->where('transaksi_jasa.kode_mekanik = mekanik.kode_mekanik')
+             ->where('kode_transaksi', $transactionId);
 
-    //     if (!$sparePartId)
-    //     {
-    //         return $this->get()->getResultArray();
-    //     }
+        if (!$serviceId)
+        {
+            return $this->get()->getResultArray();
+        }
 
-    //     return $this->where('suku_cadang.kode_suku_cadang', $sparePartId)
-    //                 ->get()->getRowArray();
-    // }
+        return $this->where('jasa.kode_jasa', $serviceId)
+                    ->get()->getRowArray();
+    }
 
-    // public function addItem(int $transactionId,
-    //                         int $sparePartId,
-    //                         int $qty,
-    //                         int $het)
-    // {
-    //     $data = [
-    //         'kode_transaksi' => $transactionId,
-    //         'kode_suku_cadang' => $sparePartId,
-    //         'qty' => $qty,
-    //         'harga_total' => $qty * $het
-    //     ];
-    //     $this->replace($data);
+    public function addService(int $transactionId,
+                               int $serviceId,
+                               int $mechanicId,
+                               int $price)
+    {
+        $data = [
+            'kode_transaksi' => $transactionId,
+            'kode_jasa' => $serviceId,
+            'kode_mekanik' => $mechanicId,
+            'ongkos' => $price
+        ];
+        $this->insert($data);
 
-    //     return $this->select('kode_transaksi_suku_cadang')
-    //                 ->orderBy('kode_transaksi_suku_cadang DESC')
-    //                 ->get()->getRowArray();
-    // }
+        return $this->select('kode_transaksi_jasa')
+                    ->where('kode_transaksi', $transactionId)
+                    ->orderBy('kode_transaksi_jasa DESC')
+                    ->get()->getRowArray();
+    }
 }

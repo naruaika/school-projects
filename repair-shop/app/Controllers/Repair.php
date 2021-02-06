@@ -41,11 +41,8 @@ class Repair extends BaseController
 		$salesTransactions = new SalesTransactions();
 		$data['cartItems'] = $salesTransactions->getItems($transactionId);
 
-		// $repairTransactions = new RepairTransactions();
-		// $data['serviceItems'] = $repairTransactions->getItems($transactionId);
-
-		$data['serviceItems'] = null;
-		$data['mekanik'] = [];
+		$repairTransactions = new RepairTransactions();
+		$data['serviceItems'] = $repairTransactions->getItems($transactionId);
 
 		$customers = new Customers;
 		$data['customer'] = $customers->getCustomers($data['kode_pelanggan']);
@@ -84,6 +81,36 @@ class Repair extends BaseController
 
 			return redirect()->to('/repair/' . $transactionId);
 		}
+	}
+
+	use ResponseTrait;
+
+	public function update(int $transactionId)
+	{
+		if ($_POST && $this->validate([
+			'serviceId' => 'required|numeric',
+			'mechanicId' => 'required|numeric',
+			'price' => 'required|numeric']))
+		{
+			$repairTransactions = new RepairTransactions();
+			$repairTransactions->addService($transactionId,
+											$_POST['serviceId'],
+											$_POST['mechanicId'],
+											$_POST['price']);
+
+			return $this->respond(null, 200);
+		}
+
+		return $this->failValidationError('Parameter tidak valid.');
+	}
+
+	public function commit(int $transactionId)
+	{
+		// check if all services are done
+		$transactions = new Transactions();
+		$data = $transactions->closeTransaction($transactionId);
+
+		return $this->respond($data, 200);
 	}
 
 }

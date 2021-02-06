@@ -43,10 +43,10 @@
                         if ($row['status'] != 'batal') : ?>
                             <tr>
                                 <th style="vertical-align: middle; text-align: left;"><?= esc($row['kode_transaksi']); ?></th>
-                                <td style="vertical-align: middle;"><?= esc($row['tgl_masuk']); ?></td>
+                                <td style="vertical-align: middle;"><?= esc($row['tgl_keluar']) ?? '-'; ?></td>
                                 <td style="vertical-align: middle;"><?= esc($row['no_polisi']); ?></td>
-                                <td style="vertical-align: middle;"><?= '-'; ?></td>
-                                <td style="vertical-align: middle;">-</td>
+                                <td style="vertical-align: middle;"><?= esc($row['keluhan']) ?: '-'; ?></td>
+                                <td style="vertical-align: middle;"><?= number_format(esc($row['harga_total']), 0, ',', '.'); ?></td>
 
                                 <td style="vertical-align: middle; font-size: 1.15em">
                                     <?php if ($row['status'] == 'sedang') : ?>
@@ -111,8 +111,8 @@
                         <tr>
                             <th style="vertical-align: middle; text-align: left;"><?= esc($row['kode_transaksi']); ?></th>
                             <td style="vertical-align: middle;"><?= esc($row['tgl_keluar']) ?? '-'; ?></td>
-                            <td style="vertical-align: middle;"><?= mb_strimwidth(esc($row['daftar_suku_cadang']), 0, 50, '...') ?? '-'; ?></td>
-                            <td style="vertical-align: middle;"><?= number_format(esc($row['harga_total']), 0, ',', '.') ?? '-'; ?></td>
+                            <td style="vertical-align: middle;"><?= mb_strimwidth(esc($row['daftar_suku_cadang']), 0, 50, '...') ?: '-'; ?></td>
+                            <td style="vertical-align: middle;"><?= number_format(esc($row['harga_total']), 0, ',', '.'); ?></td>
 
                             <td style="vertical-align: middle; font-size: 1.15em">
                                 <?php if ($row['status'] == 'sedang') : ?>

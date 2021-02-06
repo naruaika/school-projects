@@ -66,10 +66,10 @@
 
                         <tbody>
                             <?php $no = 1;
-                            $grandTotal = 0;
+                            $totalSales = 0;
                             foreach ($cartItems as $row) :
                                 $total = $row['het'] * $row['qty'];
-                                $grandTotal += $total; ?>
+                                $totalSales += $total; ?>
                                 <tr>
                                     <th><?= esc($no++); ?></th>
                                     <td><?= esc($row['nomor_suku_cadang']); ?></td>
@@ -91,7 +91,7 @@
                         <tfoot>
                             <tr class="table-success">
                                 <th colspan="3">Harga Total</th>
-                                <td colspan="2" style='text-align: right; font-weight: bold;'>Rp<?= number_format($grandTotal, 0, ',', '.'); ?></td>
+                                <td colspan="2" style='text-align: right; font-weight: bold;'>Rp<?= number_format($totalSales, 0, ',', '.'); ?></td>
 
                                 <?php if ($status == 'sedang') : ?>
                                     <td></td>
@@ -182,7 +182,7 @@
                     <tr class="table-success">
                         <th style="vertical-align: middle;">Total Belanja</th>
 
-                        <?php $grandTotal = ($totalRepair ?? 0) + ($totalSales ?? 0); ?>
+                        <?php $grandTotal = $totalSales ?? 0; ?>
                         <th style="text-align: right;">
                             Rp<?= number_format(($grandTotal ?? 0), 0, ',', '.'); ?>
                         </th>
@@ -256,9 +256,9 @@
                             line += '<td>';
                             line += '<div class="input-group">';
 
-                            line += '<button class="btn btn-outline-primary btn-sm" onclick="addCartItem(' + row.kode_suku_cadang + ')"><span data-feather="arrow-left"></span></button>';
-
                             line += '<input id="input-qty-' + row.kode_suku_cadang + '" type="number" name="qty" class="form-control form-control-sm" value="0" min="0" max="' + row.stok + '">';
+
+                            line += '<button class="btn btn-outline-primary btn-sm" onclick="addCartItem(' + row.kode_suku_cadang + ')"><span data-feather="plus"></span></button>';
 
                             line += '</div>';
                             line += '</td>';
@@ -285,7 +285,7 @@
                         location.reload(true);
                     }
                 }
-                xhttp.send('partId=' + partId + '&qty=' + qty + '&price=' + qty);
+                xhttp.send('partId=' + partId + '&qty=' + qty);
             }
         }
 
@@ -298,6 +298,12 @@
                 }
             }
             xhttp.send();
+        }
+
+        function countChange() {
+            document.getElementById('input-change').innerText = (
+                document.getElementById('input-pay').value - <?= $grandTotal; ?>)
+                .toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
     <?php endif; ?>
 </script>
