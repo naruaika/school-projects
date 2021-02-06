@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      args:
+        user: noname
+        uid: 1000
+      context: ./
+      dockerfile: ./docker-compose/Containerfile
+    image: repair-shop
+    container_name: repair-shop-app
+    volumes:
+      - ./:/var/www:z
+    restart: unless-stopped
+    networks:
+      - repair-shop
+    # privileged: true
+
+  db:
+    image: docker.io/mysql:8.0.23
+    container_name: repair-shop-db
+    environment:
+      - MYSQL_DATABASE=bengkel_motor
+      - MYSQL_ROOT_PASSWORD=nopassword
+      - MYSQL_PASSWORD=nopassword
+      - MYSQL_USER=noname
+      - SERVICE_TAGS=dev
+      - SERVICE_NAME=mysql
+    restart: unless-stopped
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d:z
+    networks:
+      - repair-shop
+
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: repair-shop-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www:z
+      - ./docker-compose/nginx:/etc/nginx/conf.d/:z
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - repair-shop
+
+networks:
+  repair-shop:
+    driver: bridge
