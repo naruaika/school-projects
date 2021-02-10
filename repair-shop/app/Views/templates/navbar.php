@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="<?= base_url('dashboard'); ?>">
-            <img src="<?= base_url('icons/site-icon.png'); ?>" width="30" height="30" alt="Logo Bengkel Motor" class="me-2">
+        <a class="navbar-brand" href="{ defaultPage }">
+            <img src="{ icon }" width="30" height="30" alt="Logo Bengkel Motor" class="me-2">
             Bengkel Motor
         </a>
 
@@ -15,11 +15,11 @@
                 <li class="nav-item">
                     <div class="btn btn-sm my-1 ps-0 me-2">
                         <span data-feather="user"></span>
-                        <?= ucfirst(session('permission')); ?> / <?= ucfirst(session('employeeId')); ?>
+                        { userInfo }
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-sm btn-outline-danger my-1" href="<?= base_url('logout'); ?>">
+                    <a class="btn btn-sm btn-outline-danger my-1" href="{ logoutPage }">
                         <span data-feather="log-out"></span>
                         Keluar
                     </a>

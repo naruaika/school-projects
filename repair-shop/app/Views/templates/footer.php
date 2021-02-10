@@ -1,11 +1,11 @@
-<?php if (session('employeeId')) : ?>
+{ if $footer }
     <footer class="bg-light text-muted text-center p-4 mt-auto">
         &copy;1439 Bengkel Motor
     </footer>
-<?php endif; ?>
+{ endif }
 
 <!-- Icons -->
-<script src="<?= base_url('feather.min.js'); ?>"></script>
+<script src="{ icons }"></script>
 <script>
     feather.replace()
 </script>
