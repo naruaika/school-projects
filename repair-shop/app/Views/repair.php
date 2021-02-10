@@ -13,7 +13,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-12 col-md-12">
+        <div class="col-lg-6 col-md-6">
             <h5>
                 <span data-feather="bookmark" style="height: 20px"></span>
                 Informasi Umum
@@ -36,7 +36,9 @@
                         </label>
                         <input type="text" id="input-police-no" name="police-no" class="form-control" placeholder="Contoh: A 1234 B" value="<?php isset($kode_transaksi) ? (print(esc($customer['no_polisi']) ?: '-')) : print(''); ?>" autocapitalize="characters" required>
                     </div>
+                </div>
 
+                <div class="row mb-3">
                     <div class="col-lg col-md-6">
                         <label for="input-chassis-no" class="mb-2">
                             Nomor Rangka
@@ -67,7 +69,9 @@
                         </label>
                         <input type="tel|email" id="input-contact" name="contact" class="form-control" value = "<?php isset($kode_transaksi) ? (print(esc($customer['kontak']) ?: '-')) : print(''); ?>" placeholder="Contoh: 081234567890">
                     </div>
+                </div>
 
+                <div class="row mb-3">
                     <div class="col-lg col-md-6">
                         <label for="input-timestamp-begin" class="mb-2">
                             Cap Waktu Masuk
@@ -84,7 +88,7 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-12 col-md-12">
                         <label for="input-timestamp-end" class="mb-2">
                             Keluhan <em>(wajib diisi)</em>
                         </label>

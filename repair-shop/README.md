@@ -37,7 +37,7 @@ docker-compose build app
 docker-compose up -d
 ```
 
-Please wait until the application is ready and then do not forget to install all the required packages:
+Please wait until the application is ready, eg. by checking the output of `docker-compose logs`, for the database may take some time to initialise.  install all the required packages:
 
 ```bash
 docker-compose exec app composer install
