@@ -6,23 +6,37 @@ class Pages extends BaseController
 						  string $title = '',
 						  array $data = [],
 						  bool $navbar = false,
-						  string $style = null)
+						  string $style = '')
 	{
 		if (!is_file(APPPATH . '/Views/' . $page . '.php'))
 		{
 			throw new \CodeIgniter\Exceptions\PageNotFoundException($page);
 		}
 
-		$data['title'] = ucwords($title);
-		$data['style'] = $style;
+		$parser = \Config\Services::parser();
+		echo $parser->setData(['title' => $title,
+							   'icon' => base_url('icons/site-icon.png'),
+							   'bootstrapCss' => base_url('bootstrap/dist/css/bootstrap.min.css'),
+							   'bootstrapJs' => base_url('bootstrap/dist/js/bootstrap.min.js'),
+							   'mainCss' => base_url('styles/main.css'),
+							   'customCss' => base_url('/styles/' . esc($style) . '.css')])
+					->render('templates/header');
 
-		echo view('templates/header', $data);
 		if ($navbar)
 		{
-			echo view('templates/navbar');
+			echo $parser->setData(['defaultPage' => base_url('dashboard'),
+							       'icon' => base_url('icons/site-icon.png'),
+								   'userInfo' => ucfirst(session('permission')) . '/' . ucwords(session('employeeId')),
+								   'logoutPage' => base_url('logout')])
+						->render('templates/navbar');
 		}
+
+		$data['title'] = ucfirst($title);
 		echo view($page, $data);
-		echo view('templates/footer', $data);
+
+		echo $parser->setData(['footer' => session('employeeId'),
+							   'icons' => base_url('feather.min.js')])
+					->render('templates/footer');
 	}
 
 }
