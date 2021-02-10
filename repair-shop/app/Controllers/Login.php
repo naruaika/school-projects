@@ -11,7 +11,7 @@ class Login extends BaseController
 			return redirect()->to('/');
 		}
 
-		$data = ['error' => false];
+		$data = [];
 
 		if ($_POST && $this->validate([
 			'employee-id' => 'required',
@@ -26,16 +26,18 @@ class Login extends BaseController
 
 			if ($employee)
 			{
-				session()->set(['employeeId' => $employeeId,
-								'permission' => $employee['hak_akses']]);
+				session()->set([
+					'employeeId' => $employeeId,
+					'permission' => $employee['hak_akses']
+				]);
 
-				return redirect()->to('/');
+				return redirect()->to('/dashboard');
 			}
-			$data['error'] = true;
+			else
+			{
+				$data['error'] = true;
+			}
 		}
-
-		$data['loginPage'] = base_url('login');
-		$data['icon'] = base_url('icons/site-icon.png');
 
 		helper('form');
 
