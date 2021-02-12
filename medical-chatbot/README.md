@@ -10,7 +10,7 @@ I am very aware that a chatbot cannot replace the role of a doctor, no matter ho
 
 ## How to run
 
-Assuming that you have `npm` and `docker` installed on your system, you can build, install, and then run this project by executing the following commands.
+Assuming that you have `docker` installed on your system, you can build, install, and then run this project by executing the following commands.
 
 ```bash
 docker-compose up -d
