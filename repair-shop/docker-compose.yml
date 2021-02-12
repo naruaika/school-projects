@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d:z
+      - ./docker-compose/test:/test:z
     networks:
       - repair-shop
 

@@ -28,6 +28,7 @@ Previews:
 
 <!-- Features:
 
+- TODO: Transaction cancellation
 - TODO: Backup old records
 - TODO: Super admin role
 - TODO: Secure user password field
