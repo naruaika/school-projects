@@ -12,21 +12,35 @@ Previews:
 
   ![Dashboard](/repair-shop/screenshots/dashboard.png)
 
+- Customer registration
+
+  ![Transaction details](/repair-shop/screenshots/transaction-details0.png)
+
 - Transaction details
 
-  ![Transaction details](/repair-shop/screenshots/transaction-details.png)
+  <!-- ![Transaction details](/repair-shop/screenshots/transaction-details1.png) -->
 
-Features:
+  ![Transaction details](/repair-shop/screenshots/transaction-details2.png)
 
+  <!-- ![Transaction details](/repair-shop/screenshots/transaction-details3.png) -->
+
+  ![Transaction details](/repair-shop/screenshots/transaction-details4.png)
+
+<!-- Features:
+
+- TODO: Backup old records
+- TODO: Super admin role
+- TODO: Secure user password field
 - TODO: Transaction discount
 - TODO: Oil change notification (every 2 months or 2.000 km)
 - TODO: Send receipt to customers' email
-- TODO: Trade-ins spare parts
+- TODO: Trade-ins spare parts -->
 
 References:
 
-- [APLIKASI PENGOLAHAN DATA TRANSAKSI BENGKEL MOTOR DENGAN MENERAPKAN PROTOKOL TWO PHASE LOCKING](https://repository.usd.ac.id/9270/2/105314092_full.pdf)
-- [HARGA JASA SERVICE MOTOR HONDA BENGKES AHASS](https://www.anisanagamasmotor.com/p/daftar-harga-jasa-service-motor-honda.html)
+- [Aplikasi Pengolahan Data Transaksi Bengkel Motor Dengan Menerapkan Protokol Two Phase Locking](https://repository.usd.ac.id/9270/2/105314092_full.pdf)
+- [Harga Jasa Service Motor Honda Bengkes Ahass](https://www.anisanagamasmotor.com/p/daftar-harga-jasa-service-motor-honda.html)
+- [Struktur Organisasi Bengkel](https://ahassmotor.wordpress.com/2010/12/23/struktur-organisasi/)
 
 ## How to run the app?
 
@@ -34,10 +48,13 @@ Using `docker`, we need an internet connection to setup this demo. **To setup an
 
 ```bash
 docker-compose build app
+
+# For the first run, it's recommended to
+# run `docker-compose up` instead
 docker-compose up -d
 ```
 
-Please wait until the application is ready, eg. by checking the output of `docker-compose logs`, for the database may take some time to initialise.  install all the required packages:
+Please wait until the application is ready, eg. by checking the output of `docker-compose logs`, for the database may take some time to initialise. Then, install all the required packages:
 
 ```bash
 docker-compose exec app composer install
@@ -47,6 +64,15 @@ Afterwards, **you can access** the application using your favorite browser at:
 
 ```text
 http://localhost:8000
+```
+
+**To testing purposes**, you can import our testing data:
+
+```bash
+docker-compose exec db bash
+mysql -unoname -pnopassword bengkel_motor < /test/dump_db1.sql
+mysql -unoname -pnopassword bengkel_motor < /test/dump_db2.sql
+exit
 ```
 
 **To stop/remove**, just run:
@@ -78,7 +104,4 @@ and has been successfully deployed locally on:
 
 ## Developer notes
 
-- This application uses the Indonesian language as it was first developed using local case studies.
-- The `kata_sandi` (aka `passwod`) column in `pengguna` (aka `users`) table in the database is not hashed for convenience only.
-  - To login as admin, please use `A001` for the ID and `admin01` for the password.
-  - To login as cashier, please use `K001` for the ID and `kasir01` for the password.
+This application uses the Indonesian language as it was first developed using local case studies.

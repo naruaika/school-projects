@@ -84,6 +84,8 @@ phpunit
 # Composer
 #-------------------------
 vendor/
+bootstrap/
+chartjs/
 
 #-------------------------
 # IDE / Development Files
@@ -124,5 +126,3 @@ nb-configuration.xml
 /results/
 /phpunit*.xml
 /.phpunit.*.cache
-
-bootstrap/
