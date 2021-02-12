@@ -8,6 +8,10 @@ This project is intended for deeper learning in computerizing manual work in a m
 
 Previews:
 
+- Login
+
+  ![Login](/repair-shop/screenshots/login.png)
+
 - Dashboard
 
   ![Dashboard](/repair-shop/screenshots/dashboard.png)
@@ -18,11 +22,7 @@ Previews:
 
 - Transaction details
 
-  <!-- ![Transaction details](/repair-shop/screenshots/transaction-details1.png) -->
-
   ![Transaction details](/repair-shop/screenshots/transaction-details2.png)
-
-  <!-- ![Transaction details](/repair-shop/screenshots/transaction-details3.png) -->
 
   ![Transaction details](/repair-shop/screenshots/transaction-details4.png)
 

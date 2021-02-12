@@ -27,17 +27,8 @@ class Transactions extends Model
                     ->get()->getRowArray();
     }
 
-    public function getReparations(string $employeeId = null,
-                                   string $status = 'sedang')
+    public function getReparations(string $employeeId)
     {
-        if (!$employeeId)
-        {
-            // Assume that the user is an `admin`
-            // TODO: add pagination function
-            // TODO: apply column filter
-            return $this->findAll();
-        }
-
         return $this->query("
             SELECT
                 C.kode_transaksi,
@@ -46,11 +37,11 @@ class Transactions extends Model
                 status,
                 no_polisi,
                 keluhan,
-                (harga_total_suku_cadang + harga_total_jasa) AS harga_total
+                (harga_total_suku_cadang + IFNULL(harga_total_jasa, 0)) AS harga_total
             FROM (
                 SELECT
                     A.*,
-                    harga_total_suku_cadang
+                    IFNULL(harga_total_suku_cadang, 0) AS harga_total_suku_cadang
                 FROM (
                     SELECT
                         transaksi.kode_transaksi,
@@ -63,9 +54,8 @@ class Transactions extends Model
                         transaksi,
                         pengguna,
                         pelanggan
-                    WHERE (
-                            status = ? OR
-                            tgl_keluar >= ?) AND
+                    WHERE
+                        tgl_keluar >= ? AND
                         transaksi.kode_pelanggan <> 1 AND
                         transaksi.kode_pelanggan = pelanggan.kode_pelanggan AND
                         transaksi.kode_kasir = pengguna.kode_pengguna AND
@@ -96,24 +86,14 @@ class Transactions extends Model
                     transaksi.kode_transaksi = transaksi_jasa.kode_transaksi
                 GROUP BY
                     transaksi.kode_transaksi) AS D
-            ON C.kode_transaksi = D.kode_transaksi;
-            ", [$status, date('Y-m-d'), $employeeId]
+            ON
+                C.kode_transaksi = D.kode_transaksi;
+            ", [date('Y-m-d'), $employeeId]
         )->getResultArray();
-
-
     }
 
-    public function getSales(string $employeeId = null,
-                             string $status = 'sedang')
+    public function getSales(string $employeeId)
     {
-        if (!$employeeId)
-        {
-            // Assume that the user is an `admin`
-            // TODO: add pagination function
-            // TODO: apply column filter
-            return $this->findAll();
-        }
-
         return $this->query("
             SELECT
                 A.*,
@@ -128,9 +108,8 @@ class Transactions extends Model
                 FROM
                     transaksi,
                     pengguna
-                WHERE (
-                        status = ? OR
-                        tgl_keluar >= ?) AND
+                WHERE
+                    tgl_keluar >= ? AND
                     transaksi.kode_pelanggan = 1 AND
                     transaksi.kode_kasir = pengguna.kode_pengguna AND
                     no_pegawai = ?) AS A
@@ -150,7 +129,7 @@ class Transactions extends Model
                     transaksi.kode_transaksi) AS B
             ON
                 A.kode_transaksi = B.kode_transaksi;
-            ", [$status, date('Y-m-d'), $employeeId]
+            ", [date('Y-m-d'), $employeeId]
         )->getResultArray();
     }
 
