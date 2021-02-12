@@ -1,0 +1,15 @@
+click==7.1.2
+dnspython==1.16.0
+eventlet==0.30.1
+Flask==1.1.2
+Flask-SocketIO==4.3.2
+greenlet==1.0.0
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+python-engineio==3.14.2
+python-Levenshtein==0.12.2
+python-socketio==4.6.1
+six==1.15.0
+uWSGI==2.0.18
+Werkzeug==1.0.1

@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./app/Dockerfile
+    image: medical-chatbot-vuejs
+    container_name: medical-chatbot-app
+    restart: unless-stopped
+    volumes:
+      - ./app:/app:z
+    network_mode: host
+    # networks:
+    #   - medical-chatbot
+    command: >
+      sh -c "npm run serve"
+
+  flask:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile
+    image: medical-chatbot-flask
+    container_name: medical-chatbot-flask
+    restart: unless-stopped
+    volumes:
+      - ./server:/app:z
+    network_mode: host
+    # networks:
+    #   - medical-chatbot
+    command: >
+      sh -c "python ./main.py"
+
+# networks:
+#   medical-chatbot:
+#     driver: bridge
